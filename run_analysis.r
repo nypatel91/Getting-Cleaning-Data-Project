@@ -1,23 +1,23 @@
 #setwd("UCI HAR Dataset")
 
 #1. Read in data
-#Read in X-dataset
+#Read in readings
 tmp1 <- read.table("train/X_train.txt")
 tmp2 <- read.table("test/X_test.txt")
 X <- rbind(tmp1,tmp2)
 
-#Read in Y-dataset
+#Read in activity labels
 tmp1 <- read.table("train/y_train.txt")
 tmp2 <- read.table("test/y_test.txt")
 Y <- rbind(tmp1,tmp2)
 
-#Read in activity labels
+#Read in subject labels
 tmp1 <- read.table("train/subject_train.txt")
 tmp2 <- read.table("test/subject_test.txt")
 Z <- rbind(tmp1,tmp2)
 
 
-#2. Find interested columns for the X
+#2. Find interested columns for readings data and then merge the 3 datasets
 features <- read.table("features.txt")
 select <- grep("mean\\(\\)|std\\(\\)", features[,2])
 features_select <- features[select,2]
@@ -30,8 +30,8 @@ alldata <- cbind(X,Y,Z)
 #3. Introduce col. names and labels
 colnames(alldata) <- c(features_select,"Activity","Subject")
 activity_labels = read.table("activity_labels.txt")
-alldata$Activity = factor(alldata$Activity,levels = c(1:6),
-                          labels = activity_labels[,2])
+alldata$Activity = factor(alldata$Activity,levels = c(1:6), labels = activity_labels[,2])
+
 #4. Tidy data
 library(reshape2)
 alldata.melt <- melt(alldata, id = c("Subject","Activity"))
